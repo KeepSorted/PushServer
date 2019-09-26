@@ -20,6 +20,8 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
             Utils.log("该客户端未注册");
             return;
         }
+        Long id = MyChannelHandlerMap.biDirectionHashMap.getByValue(channel);
+        Utils.log("客户端断开连接 id -> " + id);
         MyChannelHandlerMap.biDirectionHashMap.removeByValue(channel);
     }
 
@@ -62,5 +64,11 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
             MyChannelHandlerMap.biDirectionHashMap.put(id, ctx.channel());
             MyChannelHandlerMap.lastUpdate.put(id, new Date());
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        Utils.log("异常，断开");
+        ctx.close();
     }
 }
